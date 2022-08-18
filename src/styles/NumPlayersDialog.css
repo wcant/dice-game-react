@@ -1,0 +1,56 @@
+* {
+  --color-5: #ff8b94;
+}
+
+#playerNumForm {
+  text-align: center;
+}
+
+#playerNumForm input {
+  position: absolute;
+  opacity: 0;
+}
+
+.label-btn {
+  display: inline-block;
+  box-sizing: border-box;
+  padding: 1rem 1.75rem;
+  margin: 0 1rem;
+  font-size: 2rem;
+  color: whitesmoke;
+  background-color: steelblue;
+  border: 5px solid #878787;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+legend {
+  font-size: 2rem;
+}
+
+.selected {
+  background-color: whitesmoke;
+  color: #878787;
+  border: 5px solid steelblue;
+}
+
+.row-wrapped {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-red {
+  background-color: var(--color-5);
+}
+
+.btn {
+  box-sizing: border-box;
+  color: #fff;
+  padding: 20px 30px;
+  font-size: 20px;
+  margin: 40px auto;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
