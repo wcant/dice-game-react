@@ -3,20 +3,20 @@ import Dialog from "./Dialog";
 import "../styles/NumPlayersDialog.css";
 
 export default function NumPlayersDialog(props) {
-  const [selected, setSelected] = useState(2);
+  const [selected, setSelected] = useState("2");
 
   function handleClick(e) {
     const { value } = e.target;
-    props.setNumPlayers(() => parseInt(value));
     setSelected(value);
   }
 
   // Submit
-  // - gameData is updated onChange so no need to change any data on submit
-  // - defaults to 2 players, so checking that an input was clicked isn't necessary
+  // - Only change numPlayers on submit, less calculations than changing onClick of numbers
+  // - defaults to 2 players
   // - the modal needs to be hidden
   function handleSubmit(e) {
     e.preventDefault();
+    props.setNumPlayers(() => parseInt(selected));
     props.setShowDialog(false);
   }
 
@@ -25,12 +25,12 @@ export default function NumPlayersDialog(props) {
       <h1>Let's Play Dice!!!</h1>
       <form id="playerNumForm" onSubmit={handleSubmit}>
         <legend>Select the Number of Players</legend>
-        <div className="row-wrapped">
+        <div className="container">
           <button
             type="button"
             name="nPlayers"
             value="2"
-            className={`label-btn${selected === "2" ? " selected" : ""}`}
+            className={`player-btn${selected === "2" ? " selected" : ""}`}
             tabIndex="0"
             onClick={handleClick}
           >
@@ -40,7 +40,7 @@ export default function NumPlayersDialog(props) {
             type="button"
             name="nPlayers"
             value="3"
-            className={`label-btn${selected === "3" ? " selected" : ""}`}
+            className={`player-btn${selected === "3" ? " selected" : ""}`}
             tabIndex="0"
             onClick={handleClick}
           >
@@ -50,7 +50,7 @@ export default function NumPlayersDialog(props) {
             type="button"
             name="nPlayers"
             value="4"
-            className={`label-btn${selected === "4" ? " selected" : ""}`}
+            className={`player-btn${selected === "4" ? " selected" : ""}`}
             tabIndex="0"
             onClick={handleClick}
           >
@@ -60,7 +60,7 @@ export default function NumPlayersDialog(props) {
             type="button"
             name="nPlayers"
             value="5"
-            className={`label-btn${selected === "5" ? " selected" : ""}`}
+            className={`player-btn${selected === "5" ? " selected" : ""}`}
             tabIndex="0"
             onClick={handleClick}
           >
@@ -70,7 +70,7 @@ export default function NumPlayersDialog(props) {
             type="button"
             name="nPlayers"
             value="6"
-            className={`label-btn${selected === "6" ? " selected" : ""}`}
+            className={`player-btn${selected === "6" ? " selected" : ""}`}
             tabIndex="0"
             onClick={handleClick}
           >

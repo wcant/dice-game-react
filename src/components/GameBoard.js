@@ -1,15 +1,18 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import NumPlayersDialog from "./NumPlayersDialog";
-import WinnerDialog from "./WinnerDialog";
 import PlayerCardsContainer from "./PlayerCardsContainer";
+import Messages from "./Messages";
+import "../styles/GameBoard.css";
 
 import Leaderboard from "./Leaderboard";
 
 export default function GameBoard() {
   const [showNumPlayersDialog, setShowNumPlayersDialog] = useState(true);
-  const [showWinnerDialog, setShowWinnerDialog] = useState(false);
   const [numPlayers, setNumPlayers] = useState(2);
-  const [currentHighScore, setCurrentHighScore] = useState({});
+  const [topMessage, setTopMessage] = useState("Let's Play Dice!!!");
+  const [bottomMessage, setBottomMessage] = useState(
+    "Roll to see who goes first."
+  );
   console.log(numPlayers);
 
   return (
@@ -20,15 +23,13 @@ export default function GameBoard() {
           setNumPlayers={setNumPlayers}
         />
       )}
-      {/* Winner dialog needs to be able to see who won the game */}
-      {/*  - need to be able to reset the game after a winner is declared (go back to num player select) */}
-      {showWinnerDialog && <WinnerDialog setShowDialog={setShowWinnerDialog} />}
-      <div className="gameBoard">
-        <PlayerCardsContainer
-          numPlayers={numPlayers}
-          setCurrentHighScore={setCurrentHighScore}
-        />
-      </div>
+
+      {!showNumPlayersDialog && (
+        <div className="game-board">
+          <Messages topMessage={topMessage} bottomMessage={bottomMessage} />
+          <PlayerCardsContainer numPlayers={numPlayers} />
+        </div>
+      )}
     </>
   );
 }

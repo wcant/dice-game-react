@@ -3,8 +3,8 @@ import "./index.css";
 
 export default function App() {
   return (
-    <div className="App">
+    <main className="App">
       <GameBoard />
-    </div>
+    </main>
   );
 }

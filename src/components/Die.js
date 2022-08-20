@@ -1,4 +1,3 @@
-import { useState } from "react";
 import one from "../images/1.png";
 import two from "../images/2.png";
 import three from "../images/3.png";
@@ -30,5 +29,9 @@ export default function Die(props) {
     default:
       showDie = null;
   }
-  return <img src={showDie} alt="" />;
+  return (
+    <div className="die-container">
+      <img className="die" src={showDie} alt="" />
+    </div>
+  );
 }
