@@ -13,7 +13,6 @@ export default function GameBoard() {
   const [bottomMessage, setBottomMessage] = useState(
     "Roll to see who goes first."
   );
-  console.log(numPlayers);
 
   return (
     <>

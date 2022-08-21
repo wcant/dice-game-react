@@ -3,29 +3,31 @@ import Die from "./Die";
 
 export default function PlayerCard(props) {
   const [score, setScore] = useState(0);
+  const [roll, setRoll] = useState(0);
 
-  let roll;
-  function handleDiceRoll() {
-    roll = Math.ceil(Math.random() * 6);
-    console.log(roll);
+  // update score
+  useEffect(() => {
     setScore((prevScore) => (prevScore += roll));
-
-    if (roll > props.currentHighScore) {
-      props.setCurrentHighScore((prevHighScore) => {
-        return {
-          ...prevHighScore,
-          player: props.player,
-          score: score,
-        };
-      });
-      console.log(props.currentHighScore);
+    // declare winner if score > 20
+    if (score >= 20) {
+      props.setWinner(() => props.player);
     }
+  }, [roll]);
+
+  function handleDiceRoll() {
+    setRoll(Math.ceil(Math.random() * 6));
+
+    // remove current player from playersLeftInRound
+    props.setPlayersLeftInRound((prev) => {
+      prev.shift();
+      return [...prev];
+    });
   }
 
   return (
     <div
       className={`player-card${
-        props.active === props.player ? " card-active" : ""
+        props.playersLeftInRound[0] === props.player ? " card-active" : ""
       }`}
     >
       <h3 className="player--name">{props.player}</h3>
@@ -34,7 +36,7 @@ export default function PlayerCard(props) {
       <button
         type="button"
         className={`btn btn-green btn-roll${
-          props.active === props.player ? " active" : ""
+          props.playersLeftInRound[0] === props.player ? " active" : ""
         }`}
         onClick={handleDiceRoll}
       >
