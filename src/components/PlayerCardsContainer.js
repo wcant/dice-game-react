@@ -1,34 +1,70 @@
 import { useEffect, useState } from "react";
 import PlayerCard from "./PlayerCard";
-import WinnerDialog from "./WinnerDialog";
 import { nanoid } from "nanoid";
 
 export default function PlayerCardsContainer(props) {
-  const [showWinnerDialog, setShowWinnerDialog] = useState(false);
-  const [playerCards, setPlayerCards] = useState(makePlayerCards());
+  const {
+    setBottomMessage,
+    setTopMessage,
+    setShowWinnerDialog,
+    winner,
+    setWinner,
+  } = props;
+
+  // On initial load,
+  // -- playersLeftInRound array is populated with default order (p1, p2, ...)
+  // -- Player 1 is set to active
+
+  // Rolling dice drives the game and as each round is completed (playersLeftInRound.length === 0)
+  //   -- round++
+  //   -- playersLeftInRound repopulates
+
+  // On each player's roll,
+  //  --
+
+  // firstPlayer being set starts the game
+  //      -- message: round 1
+  //      -- playersLeftInRound array filled with the correct order
+
+  const [playerCards, setPlayerCards] = useState(() => makePlayerCards());
   const [round, setRound] = useState(0);
+  const [roundWinner, setRoundWinner] = useState({ player: "", roll: 0 });
   const [playersLeftInRound, setPlayersLeftInRound] = useState([]);
   const [firstPlayer, setFirstPlayer] = useState("");
-  const [winner, setWinner] = useState("");
 
-  // setup the conditions for determining first player
+  // initialize game -- set the order of players for
   useEffect(() => {
+    console.log("setting players left in round");
     setPlayersLeftInRound(() => {
       const playerNames = playerCards.map((player) => player.player);
       return playerNames;
     });
-  }, []);
+  }, [round, playerCards]);
 
-  // when firstPlayer is chosen, set the order in playersLeftInRound
-  // and set round to 1 --- ??? not relevant now
   useEffect(() => {
-    if (playersLeftInRound === 0) {
+    if (playersLeftInRound.length === 0) {
+      // Increment rounds only if the game
+      //  has started (first player chosen)
+      if (!firstPlayer) {
+        setFirstPlayer(roundWinner.player);
+      } else {
+        setRound((prevRound) => prevRound + 1);
+      }
     }
-  }, [playersLeftInRound]);
+  }, [playersLeftInRound, setRound, firstPlayer, setFirstPlayer, roundWinner]);
 
-  function declareWinner() {
-    setShowWinnerDialog((prevState) => !prevState);
-  }
+  useEffect(() => {
+    console.log(`update round #${round}`);
+    console.log(`first player: ${firstPlayer}`);
+    if (firstPlayer) {
+      setBottomMessage(`Round ${round}`);
+    }
+  }, [setBottomMessage, round, firstPlayer]);
+
+  // declare winner
+  useEffect(() => {
+    if (winner) setShowWinnerDialog((prevState) => !prevState);
+  }, [winner, setShowWinnerDialog]);
 
   function makePlayerCards() {
     const newPlayerCards = [];
@@ -45,31 +81,16 @@ export default function PlayerCardsContainer(props) {
     <PlayerCard
       key={player.id}
       player={player.player}
-      score={player.score}
       playersLeftInRound={playersLeftInRound}
       setPlayersLeftInRound={setPlayersLeftInRound}
+      setRoundWinner={setRoundWinner}
       setWinner={setWinner}
     />
   ));
-  console.log(playersLeftInRound);
-
-  //   useEffect(() => {
-  //     addPlayersToRound();
-  //   }, [round]);
-
-  //   useEffect(() => {
-  //     if (currentHighScore > 10) {
-  //       declareWinner();
-  //     }
-  //     console.log(currentHighScore);
-  //   }, [currentHighScore]);
 
   return (
     <>
-      {showWinnerDialog && <WinnerDialog setShowDialog={setShowWinnerDialog} />}
-      {!showWinnerDialog && (
-        <div className="player-cards-container">{playerCardElements}</div>
-      )}
+      <div className="player-cards-container">{playerCardElements}</div>
     </>
   );
 }

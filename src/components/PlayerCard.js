@@ -2,23 +2,42 @@ import { useState, useEffect } from "react";
 import Die from "./Die";
 
 export default function PlayerCard(props) {
+  const {
+    setPlayersLeftInRound,
+    player,
+    playersLeftInRound,
+    setRoundWinner,
+    setWinner,
+  } = props;
   const [score, setScore] = useState(0);
   const [roll, setRoll] = useState(0);
 
-  // update score
+  // declare winner if score > 20
   useEffect(() => {
-    setScore((prevScore) => (prevScore += roll));
-    // declare winner if score > 20
     if (score >= 20) {
-      props.setWinner(() => props.player);
+      setWinner(() => player);
     }
-  }, [roll]);
+  }, [score, setWinner, player]);
 
   function handleDiceRoll() {
-    setRoll(Math.ceil(Math.random() * 6));
+    const newRoll = Math.ceil(Math.random() * 6);
+
+    setRoll(newRoll);
+    // console.log(`${player} rolled a ${newRoll}`);
+    setScore((prevScore) => (prevScore += newRoll));
+
+    // update round winner if score is higher
+    setRoundWinner((prevRoundWinner) => {
+      if (newRoll > prevRoundWinner.roll) {
+        return { ...prevRoundWinner, player: player, roll: newRoll };
+      } else
+        return {
+          ...prevRoundWinner,
+        };
+    });
 
     // remove current player from playersLeftInRound
-    props.setPlayersLeftInRound((prev) => {
+    setPlayersLeftInRound((prev) => {
       prev.shift();
       return [...prev];
     });
@@ -27,16 +46,16 @@ export default function PlayerCard(props) {
   return (
     <div
       className={`player-card${
-        props.playersLeftInRound[0] === props.player ? " card-active" : ""
+        playersLeftInRound[0] === player ? " card-active" : ""
       }`}
     >
-      <h3 className="player--name">{props.player}</h3>
+      <h3 className="player--name">{player}</h3>
       <p className="player--score">Score: {score}</p>
       <Die roll={roll} />
       <button
         type="button"
         className={`btn btn-green btn-roll${
-          props.playersLeftInRound[0] === props.player ? " active" : ""
+          playersLeftInRound[0] === player ? " active" : ""
         }`}
         onClick={handleDiceRoll}
       >
