@@ -2,8 +2,12 @@
   --color-5: #ff8b94;
 }
 
-#playerNumForm {
-  text-align: center;
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
 }
 
 #playerNumForm input {

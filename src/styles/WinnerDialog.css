@@ -1,5 +1,26 @@
-.winner-dialog {
-  width: 100%;
-  height: 100%;
-  background-image: "../images/confetti.gif";
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.5rem;
+  text-align: center;
+  width: 700px;
+  height: 300px;
+  background-size: auto;
+  background-repeat: no-repeat;
+}
+
+.dialog-content h2 {
+  color: red;
+}
+
+@media screen and (max-width: 720px) {
+  .dialog-content {
+    background-color: white;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
 }

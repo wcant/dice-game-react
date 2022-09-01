@@ -4,12 +4,28 @@ import { nanoid } from "nanoid";
 
 export default function PlayerCardsContainer(props) {
   const {
-    setBottomMessage,
-    setTopMessage,
-    setShowWinnerDialog,
+    numPlayers,
+    firstPlayer,
     winner,
-    setWinner,
+    round,
+    roundWinner,
+    playersLeftInRound,
+    setState,
+    setShowWinnerDialog,
   } = props;
+
+  const [playerCards, setPlayerCards] = useState(() => makePlayerCards());
+
+  function makePlayerCards() {
+    const newPlayerCards = [];
+    for (let i = 1; i <= numPlayers; i++) {
+      newPlayerCards.push({
+        player: `player${i}`,
+        id: nanoid(),
+      });
+    }
+    return newPlayerCards;
+  }
 
   // On initial load,
   // -- playersLeftInRound array is populated with default order (p1, p2, ...)
@@ -19,72 +35,83 @@ export default function PlayerCardsContainer(props) {
   //   -- round++
   //   -- playersLeftInRound repopulates
 
-  // On each player's roll,
-  //  --
-
   // firstPlayer being set starts the game
   //      -- message: round 1
   //      -- playersLeftInRound array filled with the correct order
 
-  const [playerCards, setPlayerCards] = useState(() => makePlayerCards());
-  const [round, setRound] = useState(0);
-  const [roundWinner, setRoundWinner] = useState({ player: "", roll: 0 });
-  const [playersLeftInRound, setPlayersLeftInRound] = useState([]);
-  const [firstPlayer, setFirstPlayer] = useState("");
-
   // initialize game -- set the order of players for
   useEffect(() => {
     console.log("setting players left in round");
-    setPlayersLeftInRound(() => {
-      const playerNames = playerCards.map((player) => player.player);
-      return playerNames;
-    });
-  }, [round, playerCards]);
+    setState((prevState) => ({
+      ...prevState,
+      playersLeftInRound: playerCards.map((player) => player.player),
+    }));
+
+    // setPlayersLeftInRound(() => {
+    //   const playerNames = playerCards.map((player) => player.player);
+    //   return playerNames;
+    // });
+  }, [round, playerCards, setState]);
+
+  useEffect(() => {
+    console.log(`round updated`);
+  }, [round]);
+
+  //   useEffect(() => {
+  //     console.log(`playersLeftInRound updated`);
+  //   }, [props.playersLeftInRound]);
+
+  //   console.log(`playersLeftInRound: ${playersLeftInRound}`);
+  //   console.log(`first player: ${firstPlayer}`);
+  //   console.log(`round: ${round}`);
 
   useEffect(() => {
     if (playersLeftInRound.length === 0) {
       // Increment rounds only if the game
       //  has started (first player chosen)
       if (!firstPlayer) {
-        setFirstPlayer(roundWinner.player);
+        setState((prevState) => ({
+          ...prevState,
+          firstPlayer: roundWinner.player,
+        }));
+        // setFirstPlayer(roundWinner.player);
       } else {
-        setRound((prevRound) => prevRound + 1);
+        setState((prevState) => ({
+          ...prevState,
+          round: prevState.round + 1,
+        }));
+        // setRound((prevRound) => prevRound + 1);
       }
     }
-  }, [playersLeftInRound, setRound, firstPlayer, setFirstPlayer, roundWinner]);
+  }, [playersLeftInRound, firstPlayer, roundWinner, setState]);
 
   useEffect(() => {
     console.log(`update round #${round}`);
     console.log(`first player: ${firstPlayer}`);
     if (firstPlayer) {
-      setBottomMessage(`Round ${round}`);
+      setState((prevState) => ({
+        ...prevState,
+        bottomMessage: `Round ${round}`,
+      }));
+      //   setBottomMessage(`Round ${round}`);
     }
-  }, [setBottomMessage, round, firstPlayer]);
+  }, [round, firstPlayer, setState]);
 
   // declare winner
   useEffect(() => {
     if (winner) setShowWinnerDialog((prevState) => !prevState);
   }, [winner, setShowWinnerDialog]);
 
-  function makePlayerCards() {
-    const newPlayerCards = [];
-    for (let i = 1; i <= props.numPlayers; i++) {
-      newPlayerCards.push({
-        player: `player${i}`,
-        id: nanoid(),
-      });
-    }
-    return newPlayerCards;
-  }
-
   const playerCardElements = playerCards.map((player) => (
     <PlayerCard
       key={player.id}
       player={player.player}
       playersLeftInRound={playersLeftInRound}
-      setPlayersLeftInRound={setPlayersLeftInRound}
-      setRoundWinner={setRoundWinner}
-      setWinner={setWinner}
+      firstPlayer={firstPlayer}
+      setState={setState}
+      //   setPlayersLeftInRound={setPlayersLeftInRound}
+      //   setRoundWinner={setRoundWinner}
+      //   setWinner={setWinner}
     />
   ));
 

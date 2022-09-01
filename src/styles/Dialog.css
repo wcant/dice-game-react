@@ -15,14 +15,8 @@
 }
 
 .modal-inner {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  display: block;
   background-color: #dcedc1;
-  width: fit-content;
-  height: fit-content;
-  padding: 1rem;
   border: 10px solid #878787;
   border-radius: 10px;
 }

@@ -2,22 +2,25 @@ import { useState, useEffect } from "react";
 import Die from "./Die";
 
 export default function PlayerCard(props) {
-  const {
-    setPlayersLeftInRound,
-    player,
-    playersLeftInRound,
-    setRoundWinner,
-    setWinner,
-  } = props;
+  const { player, playersLeftInRound, firstPlayer, setState } = props;
   const [score, setScore] = useState(0);
   const [roll, setRoll] = useState(0);
+
+  // clear scores when firstPlayer is set
+  useEffect(() => {
+    setScore(0);
+  }, [firstPlayer]);
 
   // declare winner if score > 20
   useEffect(() => {
     if (score >= 20) {
-      setWinner(() => player);
+      //   setWinner(() => player);
+      setState((prevState) => ({
+        ...prevState,
+        winner: player,
+      }));
     }
-  }, [score, setWinner, player]);
+  }, [score, player, setState]);
 
   function handleDiceRoll() {
     const newRoll = Math.ceil(Math.random() * 6);
@@ -27,20 +30,38 @@ export default function PlayerCard(props) {
     setScore((prevScore) => (prevScore += newRoll));
 
     // update round winner if score is higher
-    setRoundWinner((prevRoundWinner) => {
-      if (newRoll > prevRoundWinner.roll) {
-        return { ...prevRoundWinner, player: player, roll: newRoll };
+    setState((prevState) => {
+      if (newRoll > prevState.roundWinner.roll) {
+        return { ...prevState, roundWinner: { player: player, roll: newRoll } };
       } else
         return {
-          ...prevRoundWinner,
+          ...prevState,
         };
     });
+    // setRoundWinner((prevRoundWinner) => {
+    //   if (newRoll > prevRoundWinner.roll) {
+    //     return { ...prevRoundWinner, player: player, roll: newRoll };
+    //   } else
+    //     return {
+    //       ...prevRoundWinner,
+    //     };
+    // });
 
     // remove current player from playersLeftInRound
-    setPlayersLeftInRound((prev) => {
-      prev.shift();
-      return [...prev];
+    setState((prevState) => {
+      const newLeftInRound = prevState.playersLeftInRound;
+      newLeftInRound.shift();
+
+      return {
+        ...prevState,
+        playersLeftInRound: newLeftInRound,
+      };
     });
+
+    // setPlayersLeftInRound((prev) => {
+    //   prev.shift();
+    //   return [...prev];
+    // });
   }
 
   return (
